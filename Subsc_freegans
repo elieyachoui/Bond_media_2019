@@ -1,0 +1,36 @@
+'--Freegans
+invalidate metadata bimedia.subscription_fact;
+
+with freegan as (
+SELECT src_sbscrbr_ky as subs_ky_freegan
+from bimedia.subscription_fact
+--where src_sbscrbr_ky =308395
+group by src_sbscrbr_ky
+having sum(net_amt) =0),
+
+dim_fct as (
+--1st tbl - fact
+SELECT dim.*, fct.* from bimedia.subscriber_dim dim INNER JOIN bimedia.subscription_fact fct on cast(dim.subscriber_key as INT) = fct.src_sbscrbr_ky
+where substr(dim.record_update_date,1,4)= '2019'
+--where (fct.prcng_pln_nm != '%APPLE%' and fct.ord_typ_nm <> 'REMOVE' and prd_nm not like '%TSN%' and prd_nm not like '%RDS%' and prcng_pln_nm not like '%APPLE%')
+--and dim.active_subscriber = 'Y'
+),
+
+dim_fct_freegans as (
+select 
+subs_ky_freegan,email , user_name , billing_city , billing_state_abrv , billing_zip , billing_country_abrv , last_action,
+prd_id , prd_nm, prcng_pln_nm , grs_amt  , disc_amt , prchs_amt , rtrn_amt , net_amt
+from freegan frg
+left join dim_fct fct 
+on frg.subs_ky_freegan = fct.src_sbscrbr_ky 
+),a as (
+select 
+subs_ky_freegan,email , user_name , billing_city , billing_state_abrv , billing_zip , billing_country_abrv , last_action,
+prd_id , prd_nm prcng_pln_nm ,
+sum(grs_amt) as gross_amt , sum(disc_amt) as disct_amt , sum(prchs_amt) as purchase_amt , sum(rtrn_amt) as return_amt , sum(net_amt) as net__amt 
+from dim_fct_freegans
+group by subs_ky_freegan,email , user_name , billing_city , billing_state_abrv , billing_zip , billing_country_abrv , last_action,
+prd_id , prd_nm, prcng_pln_nm 
+) select --* from a
+count(distinct(subs_ky_freegan)) from a
+;
