@@ -25,7 +25,7 @@ With Final_1 as
         sf.src_sbscrbr_ky = sd.subscriber_key
         Left join 
         (select * from bimedia.bond_content_views_dtl cvd 
-        where cvd.authentication_user_id is not null and cvd.content_id is not null and google_utm = 1
+        where cvd.authentication_user_id is not null and cvd.content_id is not null and google_campaign = 3 
         'where cvd.authentication_user_id is not null and cvd.content_id is not null
         )bcvd
         on cast(bcvd.src_subscriber_no as int) = sd.subscriber_id
