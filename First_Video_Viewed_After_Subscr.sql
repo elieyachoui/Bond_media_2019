@@ -26,7 +26,7 @@ With Final_1 as
         Left join 
         (select * from bimedia.bond_content_views_dtl cvd 
         where cvd.authentication_user_id is not null and cvd.content_id is not null and google_campaign = 3 
-        'where cvd.authentication_user_id is not null and cvd.content_id is not null
+        'where cvd.authentication_user_id is not null and cvd.content_id is not null'
         )bcvd
         on cast(bcvd.src_subscriber_no as int) = sd.subscriber_id
         --and cast(concat(bcvd.year,bcvd.month,bcvd.day) as int) >= sf.src_txtn_dt_ky
