@@ -33,7 +33,7 @@ With Final_1 as
         and cast(bcvd.view_start_dtm as timestamp) >= cast (sf.eff_dtm as timestamp)
         --where 
         ) final
-        where final.content_viewed_order = 1
+    where final.content_viewed_order = 1
         --and final.subscriber_id = 29999357
         )
     
